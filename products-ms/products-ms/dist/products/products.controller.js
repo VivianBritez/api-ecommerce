@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const products_service_1 = require("./products.service");
 const create_product_dto_1 = require("./dto/create-product.dto");
 const update_product_dto_1 = require("./dto/update-product.dto");
+const common_2 = require("../common");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -24,14 +25,17 @@ let ProductsController = class ProductsController {
     async create(createProductDto) {
         return await this.productsService.create(createProductDto);
     }
-    findAll() {
-        return this.productsService.findAll();
+    findAll(paginationDto) {
+        return this.productsService.findAll(paginationDto);
     }
     findOne(id) {
+        if (!id) {
+            throw new common_1.NotFoundException(`Id is required`);
+        }
         return this.productsService.findOne(+id);
     }
-    update(id, updateProductDto) {
-        return this.productsService.update(+id, updateProductDto);
+    asyncupdate(id, updateProductDto) {
+        return this.productsService.update(id, updateProductDto);
     }
     remove(id) {
         return this.productsService.remove(+id);
@@ -46,8 +50,9 @@ __decorate([
 ], ProductsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [common_2.PaginitationDto]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
 __decorate([
@@ -59,17 +64,17 @@ __decorate([
 ], ProductsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_product_dto_1.UpdateProductDto]),
+    __metadata("design:paramtypes", [Number, update_product_dto_1.UpdateProductDto]),
     __metadata("design:returntype", void 0)
-], ProductsController.prototype, "update", null);
+], ProductsController.prototype, "asyncupdate", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "remove", null);
 ProductsController = __decorate([
